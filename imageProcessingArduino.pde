@@ -2,7 +2,7 @@
  *   blobfinder  -  detect blobs of given color and size in videoimage
  */
  
-//Hello World
+//Hello Beautiful World
 
 import processing.serial.*;
 

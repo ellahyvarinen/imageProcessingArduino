@@ -47,10 +47,10 @@ void setup()
   row = new float[numPixelsX];
     
   time = millis();
-  img = loadImage("dump-0573.jpg"); //load an image
+ // img = loadImage("dump-0573.jpg"); //load an image
   
-  myPort = new Serial(this, "COM6", 9600);
-  myPort.bufferUntil('n'); //button code
+  myPort = new Serial(this, "/dev/cu.usbmodem144301", 9600);
+  myPort.bufferUntil('\n'); //button code
 }
 
 void draw()
@@ -104,10 +104,15 @@ void draw()
 }
 
 void serialEvent (Serial myPort){
-  if(!myPort.readStringUntil('n').isEmpty()) {
+  String buttonMessage = myPort.readStringUntil('\n');
+  println(buttonMessage);
+  
+  if(buttonMessage.contains("1")) {
+    println("drawmode on");
     drawModeOn = true;
   }
-  else {
+  else if (buttonMessage.contains("0")) {
+    println("drawmode off");
     drawModeOn = false;
   }
 

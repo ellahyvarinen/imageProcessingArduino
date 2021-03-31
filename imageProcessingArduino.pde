@@ -110,11 +110,11 @@ void serialEvent (Serial myPort){
   String buttonMessage = myPort.readStringUntil('\n');
   println(buttonMessage);
   
-  if(buttonMessage.contains("1")) {
+  if(buttonMessage.contains("on")) {
     println("drawmode on");
     drawModeOn = true;
   }
-  else if (buttonMessage.contains("0")) {
+  else if (buttonMessage.contains("off")) {
     println("drawmode off");
     drawModeOn = false;
   }

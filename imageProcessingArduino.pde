@@ -47,9 +47,9 @@ void setup()
   row = new float[numPixelsX];
     
   time = millis();
- // img = loadImage("dump-0573.jpg"); //load an image
+  img = loadImage("painting.jpg"); //load an image
   
-  myPort = new Serial(this, "/dev/cu.usbmodem144301", 9600);
+  myPort = new Serial(this, "COM7", 9600);
   myPort.bufferUntil('\n'); //button code
 }
 
@@ -66,7 +66,10 @@ void draw()
   for (int j = 0; j < numPixelsY; j++) {
     for (int i = 0; i < numPixelsX; i++) {
       /**/
-      if(showmode == 1) image(img, 0, 0);
+      if(showmode == 1) {
+        image(img, 0, 0, 320,240);
+        image(mircam, 0, 0, 80,60);
+      }
       point(i,j);
     }
   }

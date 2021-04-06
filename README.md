@@ -20,7 +20,7 @@ Locate to the folder in Terminal i.e. `cd Desktop/imageProcessingArduino`
 
 
 ### Drawing line example
-`
+```
 void setup() {  
   size(640, 360);  
   background(0);  
@@ -32,4 +32,4 @@ void draw() {
   //if (mousePressed == true) {}  
   line(mouseX, mouseY, pmouseX, pmouseY);  
 }  
-`
+```

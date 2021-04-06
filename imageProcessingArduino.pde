@@ -70,6 +70,10 @@ void draw()
         image(img, 0, 0, 320,240);
         image(mircam, 0, 0, 80,60);
       }
+      else if(showmode == 2) {
+        background(255,255,255);
+        image(mircam, 0, 0, 80,60);
+      }
       point(i,j);
     }
   }
@@ -132,7 +136,8 @@ void keyPressed()
 {
   if(key == '0') showmode = 0;
   if(key == '1') showmode = 1;
-  //if(key == 'z') saveFrame("dump-####.jpg");
+  if(key == '2') showmode = 2;
+  if(key == 'z') saveFrame("dump-####.jpg");
   if(key == 'n') resetstroke();
 }
 

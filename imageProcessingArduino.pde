@@ -49,7 +49,7 @@ void setup()
   time = millis();
   img = loadImage("painting.jpg"); //load an image
   
-  myPort = new Serial(this, "COM7", 9600);
+  myPort = new Serial(this, "/dev/tty.usbmodem141301", 9600);
   myPort.bufferUntil('\n'); //button code
 }
 
@@ -68,6 +68,10 @@ void draw()
       /**/
       if(showmode == 1) {
         image(img, 0, 0, 320,240);
+        image(mircam, 0, 0, 80,60);
+      }
+      else if(showmode == 2) {
+        background( 255, 255, 255);
         image(mircam, 0, 0, 80,60);
       }
       point(i,j);
@@ -97,13 +101,19 @@ void draw()
   //if(keyPressed && keyCode==SHIFT) addpoint(xcr, ycr);
   //drawstroke();
   
-
   
   if(drawModeOn){
      text("Drawmode on", 120, 120);
-     addpoint(xcr, ycr);
+     strokes.get(currentStrokeIndex).addpoint(xcr, ycr);
+   }
+   
+   if(currentStrokeIndex > -1) {
      drawstroke();
    }
+   
+
+   
+  
 }
 
 void serialEvent (Serial myPort){
@@ -125,20 +135,84 @@ void mousePressed()
 {
   if(showmode > 0) return;
   // store the color of pointed pixel as a new search reference
-  else samplecolor = myMovieColors[mouseY*numPixelsX + mouseX];
+  else {
+    //Create new Stroke and set color
+    currentStrokeIndex++;
+    strokes.add(currentStrokeIndex, new Stroke());
+    strokes.get(currentStrokeIndex).setColor(myMovieColors[mouseY*numPixelsX + mouseX]);
+    
+    println("new Stroke created with index: " + currentStrokeIndex);
+
+    
+    samplecolor = myMovieColors[mouseY*numPixelsX + mouseX];
+  }
 }
 
 void keyPressed()
 {
   if(key == '0') showmode = 0;
   if(key == '1') showmode = 1;
+  if(key == '2') showmode = 2;
   //if(key == 'z') saveFrame("dump-####.jpg");
-  if(key == 'n') resetstroke();
+  if(key == 'n') strokes.get(currentStrokeIndex).resetstroke();
+  //if(key == 'n') resetstroke();
 }
 
 /**   this is for drawing **/
+public class Stroke {
+   PVector stroke[] = new PVector[100000];
+   int N = 0;  // number of points in the stroke
+   
+   color strokeColor = color(0,0,0); 
+   
+  public void resetstroke() {
+      N = 0;
+    }
 
-PVector stroke[] = new PVector[100000];
+  public void addpoint(int newx, int newy) {
+    if(N == 100000) return;
+    stroke[N] = new PVector(newx,newy);
+    N++;
+  }
+  
+  public void setColor(color newColor) {
+    strokeColor = newColor;
+  }
+  
+  public int getN() {
+    return N;
+  }
+  
+  public PVector[] getStroke() {
+    return stroke;
+  }
+  
+  public color getColor() {
+    return strokeColor;
+  }
+}
+
+ArrayList<Stroke> strokes = new ArrayList<Stroke>();
+int currentStrokeIndex = -1;
+
+void drawstroke() {
+    for(int y = 0; y <= currentStrokeIndex; y++) {
+      Stroke currentStrokeToDraw = strokes.get(y);
+      
+      if(currentStrokeToDraw.getN()==0) return;
+    
+      stroke(currentStrokeToDraw.getColor());
+      strokeWeight(10);
+      smooth();
+    
+      for(int i=0;i<currentStrokeToDraw.getN();i++) {
+      line(currentStrokeToDraw.getStroke()[i].x, currentStrokeToDraw.getStroke()[i].y, currentStrokeToDraw.getStroke()[i].x, currentStrokeToDraw.getStroke()[i].y);
+      }
+    }
+    
+}
+
+/*PVector stroke[] = new PVector[100000];
 int N = 0;  // number of points in the stroke
 
 void resetstroke()
@@ -156,8 +230,12 @@ void addpoint(int newx, int newy)
 void drawstroke()
 {
   if(N==0) return;
+  
   stroke(samplecolor);
   strokeWeight(10);
   smooth();
-  for(int i=0;i<N;i++) line(stroke[i].x, stroke[i].y, stroke[i].x, stroke[i].y);
-}
+  
+  for(int i=0;i<N;i++) {
+  line(stroke[i].x, stroke[i].y, stroke[i].x, stroke[i].y);
+  }
+}*/
